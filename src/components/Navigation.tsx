@@ -1,14 +1,17 @@
 import { FC, memo } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { SContainer, SLogo } from '../assets/styles/app.styles';
 
 export const Navigation: FC = memo(() => {
     return (
-        <nav>
-            <h3>Github Search</h3>
-            <span>
-                <Link to='/'>Home</Link>
-                <Link to='/favorites'>Favorites</Link>
-            </span>
-        </nav>
+        <SContainer>
+            <div className='wrapper'>
+                <SLogo>Github Search</SLogo>
+                <nav>
+                    <NavLink to='/'>Home</NavLink>
+                    <NavLink to='/favorites'>Favorites</NavLink>
+                </nav>
+            </div>
+        </SContainer>
     );
 });
