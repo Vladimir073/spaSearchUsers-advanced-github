@@ -86,6 +86,36 @@ export const SMain = memo(styled.main`
     & h1 {
         font-size: 3rem;
     }
+    & ul {
+        margin: 10px auto 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 500px;
+        align-items: flex-start;
+    }
 `);
 
-export const SInput = memo(styled.li``);
+export const SInput = memo(styled.input`
+    margin-top: 20px;
+    padding: 10px;
+    width: 350px;
+    border-radius: 5px;
+    border: 2px solid #2c394b;
+    transition: 0.3s ease-in;
+    font-size: 1.25rem;
+
+    &:focus {
+        border-color: #ff4c29;
+    }
+`);
+
+export const SItem = memo(styled.li`
+    padding-left: 5px;
+
+    cursor: pointer;
+`);
+
+export const SLink = memo(styled.a`
+    color: #d2d2d2;
+`);

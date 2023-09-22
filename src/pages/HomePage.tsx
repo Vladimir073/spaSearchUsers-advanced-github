@@ -2,7 +2,7 @@ import { memo, useEffect, useState } from 'react';
 import { useLazyGetUserReposQuery, useLoadingSPAQuery, useSearchUsersQuery } from '../store/github/github.api';
 import { useDebounce } from '../hooks/debounce';
 import { IRepo, IUser } from '../models/models';
-import { SContainer, SInput } from '../assets/styles/app.styles';
+import { SContainer, SInput, SItem, SLink } from '../assets/styles/app.styles';
 import { Loader } from '../components/Loader';
 
 export const HomePage = memo(() => {
@@ -17,6 +17,7 @@ export const HomePage = memo(() => {
     });
 
     const [fetchRepos, { isLoading: areReposLoading, data: repos }] = useLazyGetUserReposQuery();
+    const [visibleRepos, setVisibleRepos] = useState(false);
 
     useEffect(() => {
         setDropdown(debounce.length >= 3 && data?.length! > 0);
@@ -25,6 +26,12 @@ export const HomePage = memo(() => {
     function handleClick(username: string) {
         fetchRepos(username);
         setDropdown(false);
+        setVisibleRepos(true);
+    }
+
+    function handleOnChange(event: React.ChangeEvent<HTMLInputElement>) {
+        setSearch(event.target.value);
+        setVisibleRepos(false);
     }
 
     if (isLoading) {
@@ -38,38 +45,41 @@ export const HomePage = memo(() => {
     return (
         <SContainer>
             {!isLoading && (
-                <>
+                <div>
                     <h1>HomePage</h1>
-                    <div>
-                        <input
-                            type='text'
-                            value={search}
-                            onChange={e => setSearch(e.target.value)}
-                            placeholder='Search for Github username...'
-                        />
-                        <ul>
-                            {areUserLoading && <>Loading...</>}
-                            {dropdown &&
-                                data?.map((item: IUser) => {
-                                    return (
-                                        <SInput key={item.id} onClick={() => handleClick(item.login)}>
-                                            {item.login}
-                                        </SInput>
-                                    );
-                                })}
+                    <SInput
+                        type='text'
+                        value={search}
+                        onChange={handleOnChange}
+                        placeholder='Search for Github username...'
+                    />
+
+                    {areUserLoading && <>Loading...</>}
+                    {dropdown && (
+                        <ul className='list_users'>
+                            {data?.map((item: IUser, id) => {
+                                return (
+                                    <SItem key={item.id} onClick={() => handleClick(item.login)}>
+                                        {id + 1}. {item.login}
+                                    </SItem>
+                                );
+                            })}
                         </ul>
-                    </div>
-                    <div>
-                        {areReposLoading && <h3>Loading...</h3>}
-                        {repos?.map((item: IRepo) => {
-                            return (
-                                <a href={item.html_url} target='_blank'>
-                                    <p>{item.full_name}</p>
-                                </a>
-                            );
-                        })}
-                    </div>
-                </>
+                    )}
+
+                    {areReposLoading && <h3>Loading...</h3>}
+                    {visibleRepos && (
+                        <ul className='list_repos'>
+                            {repos?.map((item: IRepo, id) => {
+                                return (
+                                    <SLink href={item.html_url} target='_blank'>
+                                        {id + 1}. {item.full_name}
+                                    </SLink>
+                                );
+                            })}
+                        </ul>
+                    )}
+                </div>
             )}
         </SContainer>
     );
